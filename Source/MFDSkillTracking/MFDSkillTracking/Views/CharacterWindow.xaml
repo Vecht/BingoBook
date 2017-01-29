@@ -38,8 +38,9 @@
             <TextBox Grid.Row="1"
                      Name="KnownSkillSearch"
                      Margin="10,10,10,0"
-                     Height="25" Width="200"
-                     HorizontalAlignment="Left"
+                     Height="25" MinWidth="200"
+                     MaxWidth="300"
+                     HorizontalAlignment="Stretch"
                      Style="{StaticResource EnteredTextStyle}"
                      Text="{Binding KnownSkillSearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      GotFocus="KnownSkillSearch_OnGotFocus"/>

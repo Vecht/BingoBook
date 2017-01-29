@@ -12,7 +12,7 @@ INSTRUCTIONS:
 
 * Run "Bingo Book.exe" for the application.
 * Source is included in the "Source" folder (duh).
-* The "data.bingobook" file contains working data for the application. The application will automatically keep your data synchronized upon exit, as long as you don't force quit and it doesn't error out for some reason. By default, it just contains some demo data. This is not intended to be accurate, and can be deleted.
+* The "data.bingobook" file contains working data for the application. The application will automatically keep your data synchronized upon exit, as long as you don't force quit and it doesn't error out for some reason. By default, it just contains some demo data. The known skills for the Genin are accurate as of 2017-01-28. The unknown skills for Kagome and Inoue are conjecture. This is not intended to be accurate, and can be deleted.
 
 ---
 
