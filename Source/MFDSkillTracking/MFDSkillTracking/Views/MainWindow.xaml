@@ -1,0 +1,124 @@
+﻿<Window x:Class="MFDSkillTracking.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:MFDSkillTracking.ViewModels"
+        xmlns:models="clr-namespace:MFDSkillTracking.Models"
+        mc:Ignorable="d"
+        Title="Bingo Book - By Vecht"
+        Icon="../Images/book.ico"
+        ResizeMode="NoResize"
+        Height="600" Width="250"
+        Closed="MainWindow_OnClosed">
+    <Window.DataContext>
+        <viewModels:MainViewModel/>
+    </Window.DataContext>
+    <Grid Background="SteelBlue">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <TextBlock Grid.Row="0"
+                   HorizontalAlignment="Left"
+                   Style="{StaticResource SectionHeadingStyle}"
+                   Text="Characters:"/>
+
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+
+            <Button Margin="5"
+                    Height="25" Width="25"
+                    Command="{Binding OpenVersusWindowCommand}">
+                <Image Height="20" Width="20" Source="../Images/kunai.png"/>
+            </Button>
+
+            <Button Margin="5"
+                    Height="25" Width="25"
+                    Command="{Binding SaveDataCommand}">
+                <Image Height="20" Width="20" Source="../Images/save.png"/>
+            </Button>
+            
+            <Button Margin="5"
+                    Height="25" Width="25"
+                    Command="{Binding LoadDataCommand}">
+                <Image Height="20" Width="20" Source="../Images/open.png"/>
+            </Button>
+            
+        </StackPanel>
+
+        <TextBox Grid.Row="1"
+                 Name="CharacterSearch"
+                 Margin="10,5,10,0"
+                 Height="25" Width="220"
+                 HorizontalAlignment="Left"
+                 Style="{StaticResource EnteredTextStyle}"
+                 Text="{Binding CharacterSearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 GotFocus="CharacterSearch_OnGotFocus"/>
+        
+        <Image Grid.Row="1"
+               HorizontalAlignment="Right"
+               Margin="10,10,10,0"
+               Height="25"
+               Source="../Images/search.png"/>
+
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+            <Border Background="Black"
+                    Margin="10,5,10,10"
+                    BorderThickness="2">
+                <ListBox Name="CharacterListBox"
+                         Height="440"
+                         Background="LightSteelBlue"
+                         ItemsSource="{Binding Characters}"
+                         SelectedItem="{Binding SelectedCharacter}"
+                         KeyDown="CharacterListBox_OnKeyDown"
+                         MouseDoubleClick="CharacterListBox_OnMouseDoubleClick">
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Remove" 
+                                      Command="{Binding RemoveCharacterCommand}">
+                                <MenuItem.Icon>
+                                    <Image Source="../Images/cross.png"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="models:Character">
+                            <TextBlock Name="CharacterTextBlock"
+                                       Margin="5"
+                                       Style="{StaticResource ItemTextStyle}"
+                                       Text="{Binding Name}"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+        </ScrollViewer>
+
+        <Grid Grid.Row="3"
+              Margin="10,0,10,10">
+
+            <TextBox Name="NewCharacterTextBox"
+                     Height="25" Width="185"
+                     HorizontalAlignment="Left"
+                     Style="{StaticResource EnteredTextStyle}"
+                     Text="{Binding NewCharacterName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     KeyDown="NewCharacterTextBox_OnKeyDown"/>
+
+            <Button HorizontalAlignment="Right"
+                    Height="25" Width="25"
+                    Command="{Binding AddNewCharacterCommand}">
+                <Image Height="20" Width="20"
+                       Source="../Images/add.png"/>
+            </Button>
+        </Grid>
+    </Grid>
+</Window>

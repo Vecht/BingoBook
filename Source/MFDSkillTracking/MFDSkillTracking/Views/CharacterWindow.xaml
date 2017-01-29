@@ -1,0 +1,527 @@
+﻿<Window x:Class="MFDSkillTracking.Views.CharacterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:MFDSkillTracking.ViewModels"
+        xmlns:models="clr-namespace:MFDSkillTracking.Models"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        mc:Ignorable="d"
+        Title="{Binding Character.Name}"
+        Icon="../Images/book.ico"
+        Height="600" Width="1250"
+        ResizeMode="NoResize"
+        d:DataContext="{d:DesignInstance viewModels:CharacterViewModel, IsDesignTimeCreatable=False}">
+    <Grid Background="SteelBlue">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Name="KnownSkillsGrid" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+        
+            <TextBlock Grid.Row="0"
+                       HorizontalAlignment="Left"
+                       Style="{StaticResource SectionHeadingStyle}"
+                       Text="Known Skills:"/>
+
+            <TextBox Grid.Row="1"
+                     Name="KnownSkillSearch"
+                     Margin="10,10,10,0"
+                     Height="25" Width="200"
+                     HorizontalAlignment="Left"
+                     Style="{StaticResource EnteredTextStyle}"
+                     Text="{Binding KnownSkillSearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     GotFocus="KnownSkillSearch_OnGotFocus"/>
+
+            <Image Grid.Row="1"
+                   HorizontalAlignment="Right"
+                   Margin="10,10,10,0"
+                   Height="25"
+                   Source="../Images/search.png"/>
+
+            <ScrollViewer Grid.Row="2"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <Border Background="Black"
+                    Margin="10"
+                    BorderThickness="2">
+                    <ListBox Name="KnownSkillsListbox"
+                             Height="440"
+                             Background="LightSteelBlue"
+                             ItemsSource="{Binding KnownSkills}"
+                             SelectedItem="{Binding SelectedKnownSkill}">
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Remove"
+                                          Command="{Binding RemoveKnownSkillCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="../Images/cross.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="models:KnownSkill">
+                                <Grid Width="185">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <TextBlock Grid.Column="0"
+                                               HorizontalAlignment="Left"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource ItemTextStyle}"
+                                               Text="{Binding Name, Mode=OneWay}"/>
+
+                                    <TextBox Grid.Column="1"
+                                             HorizontalAlignment="Right"
+                                             VerticalAlignment="Center"
+                                             Style="{StaticResource EnteredTextStyle}"
+                                             Text="{Binding Level, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <StackPanel Grid.Column="2"
+                                                HorizontalAlignment="Left">
+                                        <Button Width="16" Height="16" Margin="2"
+                                                Command="{Binding IncrementLevelCommand}">
+                                            <Image Source="../Images/ArrowUp.png" Height="12" Width="12"/>
+                                        </Button>
+                                        <Button Width="16" Height="16" Margin="2"
+                                                    Command="{Binding DecrementLevelCommand}">
+                                            <Image Source="../Images/ArrowDown.png" Height="12" Width="12"/>
+                                        </Button>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+            </ScrollViewer>
+
+            <Grid Grid.Row="3" Margin="10,0,10,10">
+                
+                <TextBox Name="NewKnownSkillTextBox"
+                         Height="25" Width="175"
+                         HorizontalAlignment="Left"
+                         Style="{StaticResource EnteredTextStyle}"
+                         Text="{Binding NewKnownSkillName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         KeyDown="NewKnownSkillTextBox_OnKeyDown"/>
+
+                <Button HorizontalAlignment="Right"
+                        Height="25" Width="25"
+                        Command="{Binding AddKnownSkillCommand}">
+                    <Image Height="20" Width="20"
+                           Source="../Images/add.png"/>
+                </Button>
+            </Grid>
+
+        </Grid>
+        
+        <Grid Grid.Column="1"
+              Width="1"
+              Background="Black"/>
+
+        <Grid Name="UnknownSkillsGrid" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0"
+                        HorizontalAlignment="Left"
+                        Style="{StaticResource SectionHeadingStyle}"
+                        Text="Unknown Skills:"/>
+
+            <StackPanel Grid.Row="0"
+                        Grid.RowSpan="2"
+                        HorizontalAlignment="Right"
+                        Margin="10,10,10,0">
+                <TextBlock Style="{StaticResource SectionHeadingStyle}"
+                           Margin="5,5,35,0"
+                           Text="Computation:"
+                           HorizontalAlignment="Center"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Margin="5"
+                               Style="{StaticResource ItemTextStyle}"
+                               Text="Fast"/>
+                    <Slider Width="150"
+                            Margin="5,5,5,0"
+                            Minimum="1"
+                            Maximum="5"
+                            Ticks="1,2,3,4,5"
+                            TickPlacement="BottomRight"
+                            Value="{Binding ComputationAccuracy, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                            IsSnapToTickEnabled="True"/>
+                    <TextBlock Margin="5"
+                               Style="{StaticResource ItemTextStyle}"
+                               Text="Accurate"/>
+                </StackPanel>
+            </StackPanel>
+
+            <TextBox Grid.Row="1"
+                        Name="UnknownSkillSearch"
+                        Margin="10,10,10,0"
+                        Height="25" Width="220"
+                        HorizontalAlignment="Left"
+                        Style="{StaticResource EnteredTextStyle}"
+                        Text="{Binding UnknownSkillSearchString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        GotFocus="UnknownSkillSearch_OnGotFocus"/>
+
+            <Image Grid.Row="1"
+                    HorizontalAlignment="Left"
+                    Margin="205,10,15,0"
+                    Height="25"
+                    Source="../Images/search.png"/>
+
+            <ScrollViewer Grid.Row="2"
+                            VerticalScrollBarVisibility="Auto"
+                            HorizontalScrollBarVisibility="Disabled">
+                <Border Background="Black"
+                        Margin="10"
+                        BorderThickness="2">
+                    <ListBox Name="UnknownSkillsListbox"
+                                Height="440"
+                                Background="LightSteelBlue"
+                                ItemsSource="{Binding UnknownSkills}"
+                                SelectedItem="{Binding SelectedUnknownSkill}">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="3"
+                                                IsItemsHost="True"
+                                                HorizontalAlignment="Stretch"/>
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Remove" 
+                                            Command="{Binding RemoveUnknownSkillCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="../Images/cross.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="models:UnknownSkill">
+                                <Grid Width="185" Height="150" Margin="5">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <TextBlock HorizontalAlignment="Center"
+                                                    Style="{StaticResource ItemTextStyle}"
+                                                    Text="{Binding Name, Mode=OneWay}"/>
+                                        <TextBlock HorizontalAlignment="Center"
+                                                    Style="{StaticResource ItemTextStyle}"
+                                                    Text=" ~= "/>
+                                        <TextBlock HorizontalAlignment="Center"
+                                                    Style="{StaticResource ItemTextStyle}"
+                                                    Text="{Binding MeanSkill, Mode=OneWay}"/>
+                                    </StackPanel>
+                                    <oxy:Plot Grid.Row="1"
+                                                Margin="5"
+                                                HorizontalContentAlignment="Center">
+                                        <oxy:LineSeries ItemsSource="{Binding SkillDistribution, Mode=OneWay}" DataFieldX="X" DataFieldY="Y"/>
+                                    </oxy:Plot>
+
+                                    <Grid Grid.Row="0" Grid.RowSpan="2"
+                                            Background="Black"
+                                            Opacity="0.75"
+                                            Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}}">
+                                        <Image Width="75" Height="75"
+                                               Margin="10,20,10,10"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Top"
+                                               Source="../Images/hourglass.png"/>
+                                        <TextBlock Margin="10,10,10,20"
+                                                   VerticalAlignment="Bottom"
+                                                   HorizontalAlignment="Center"
+                                                   Style="{StaticResource ItemTextStyle}"
+                                                   Foreground="{Binding Progress, Converter={StaticResource DoubleToColorConverter}}"
+                                                   Text="{Binding Progress, Mode=OneWay, StringFormat=' {0}%'}"/>
+                                    </Grid>
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+            </ScrollViewer>
+
+            <StackPanel Grid.Row="3" HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                <TextBox Name="NewUnknownSkillTextBox"
+                        Margin="10,0,0,5"
+                        Height="25" Width="200"
+                        HorizontalAlignment="Left"
+                        Style="{StaticResource EnteredTextStyle}"
+                        Text="{Binding NewUnknownSkillName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        KeyDown="NewUnknownSkillTextBox_OnKeyDown"/>
+                <ComboBox Margin="5,0,0,5"
+                        Height="25" Width="170"
+                        HorizontalAlignment="Left"
+                        ItemsSource="{Binding SkillLevels, Mode=OneWay}"
+                        SelectedItem="{Binding SelectedSkillLevel, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <Button Margin="5,0,10,5"
+                        Height="25" Width="25"
+                        HorizontalAlignment="Right"
+                        Command="{Binding AddUnknownSkillCommand}">
+                    <Image Height="20" Width="20"
+                        Source="../Images/add.png"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Column="3"
+              Width="1"
+              Background="Black"/>
+
+        <Grid Grid.Column="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Name="SideGrid" Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Grid.ColumnSpan="2"
+                           MaxWidth="275"
+                           HorizontalAlignment="Center"
+                           Style="{StaticResource SectionHeadingStyle}"
+                           Text="{Binding SelectedUnknownSkill.Name, Mode=OneWay, StringFormat='Skill: {0}'}"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="1"
+                           Margin="-5,10,0,0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Bottom"
+                           Style="{StaticResource ItemTextStyle}"
+                           FontSize="16"
+                           Text="Outcome History:"/>
+
+                <Border Grid.Row="2" Grid.Column="1"
+                        Margin="0,10,10,10"
+                        Background="Black"
+                        BorderThickness="2">
+                    <ListBox Height="215" Width="150"
+                             Background="LightSteelBlue"
+                             ItemsSource="{Binding SelectedUnknownSkill.Rolls}"
+                             SelectedItem="{Binding SelectedRoll}">
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Remove"
+                                          Command="{Binding RemoveRollResultCommand}">
+                                    <MenuItem.Icon>
+                                        <Image Source="../Images/cross.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="models:Roll">
+                                <TextBlock HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Style="{StaticResource ItemTextStyle}"
+                                           Text="{Binding RollText, Mode=OneWay}"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+
+                <TextBlock Grid.Row="1" Grid.Column="0"
+                           Margin="10,10,0,0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Bottom"
+                           Style="{StaticResource ItemTextStyle}"
+                           FontSize="16"
+                           Text="Top Values:"/>
+
+                <Border Grid.Row="2" Grid.Column="0"
+                        Margin="10"
+                        Background="Black"
+                        BorderThickness="2">
+                    <ListBox Height="215" Width="150"
+                            Background="LightSteelBlue"
+                            ItemsSource="{Binding SelectedUnknownSkill.TopValues}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock>
+                                <TextBlock Style="{StaticResource ItemTextStyle}"
+                                            Text="{Binding Item1, Mode=OneWay}"/>
+                                <TextBlock Style="{StaticResource ItemTextStyle}"
+                                            Text=" ("/>
+                                <TextBlock Style="{StaticResource ItemTextStyle}"
+                                            Text="{Binding Item2, Mode=OneWay, StringFormat='\{0:n2\}%'}"/>
+                                <TextBlock Style="{StaticResource ItemTextStyle}"
+                                            Text=")"/>
+                            </TextBlock>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+            </Grid>
+
+            <Grid Grid.Row="1"
+                  Height="1"
+                  Background="Black"/>
+
+            <Grid Name="RollsGrid" Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0"
+                           Grid.ColumnSpan="3"
+                           MaxWidth="275"
+                           HorizontalAlignment="Center"
+                           Style="{StaticResource SectionHeadingStyle}"
+                           Text="{Binding SelectedUnknownSkill.Name, Mode=OneWay, StringFormat='Add Data: {0}'}"/>
+                
+                <StackPanel Grid.Row="1" Grid.Column="0">
+                    <TextBlock Margin="10,10,10,5"
+                               HorizontalAlignment="Left"
+                               Style="{StaticResource ItemTextStyle}"
+                               Text="Opponent:"/>
+
+                    <ComboBox Width="150" Margin="10,0,0,0"
+                              ItemsSource="{Binding PossibleOpponents}"
+                              DisplayMemberPath="Name"
+                              SelectedItem="{Binding SelectedOpponent}"
+                              IsEnabled="{Binding SelectedUnknownSkill, Converter={StaticResource NullToBoolConverter}}"/>
+                </StackPanel>
+
+                <StackPanel Grid.Row="2" Grid.Column="0">
+                    <TextBlock Margin="10,10,10,5"
+                               HorizontalAlignment="Left"
+                               Style="{StaticResource ItemTextStyle}"
+                               Text="Skill:"/>
+
+                    <ComboBox Width="150" Margin="10,0,0,0"
+                              ItemsSource="{Binding PossibleOpponentSkills}"
+                              SelectedItem="{Binding SelectedOpponentSkill}"
+                              IsEnabled="{Binding SelectedOpponent, Converter={StaticResource NullToBoolConverter}}"/>
+                </StackPanel>
+
+                <Grid Grid.Row="3" Grid.Column="0">
+                    <TextBlock Margin="10,15,10,5"
+                               HorizontalAlignment="Left"
+                               Style="{StaticResource ItemTextStyle}"
+                               Text="Outcome:"/>
+                    <TextBox Name="OutcomeTextBox"
+                             Margin="0,15,10,5" Width="75" Height="20"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Right"
+                             HorizontalContentAlignment="Center"
+                             Style="{StaticResource EnteredTextStyle}"
+                             Text="{Binding Outcome}"/>
+                </Grid>
+
+                <Grid Grid.Row="4" Grid.Column="0">
+                    <TextBlock Margin="10,5,10,5"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+                               Style="{StaticResource ItemTextStyle}"
+                               Text="Character Mod?"/>
+                    <TextBox Margin="0,5,10,5" Width="30" Height="20"
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Right"
+                             HorizontalContentAlignment="Center"
+                             Style="{StaticResource EnteredTextStyle}"
+                             Text="{Binding CharacterDiceBonus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </Grid>
+
+                <StackPanel Grid.Row="5" Grid.Column="0">
+                    <TextBlock Margin="10,0,10,5"
+                               HorizontalAlignment="Left"
+                               Style="{StaticResource ItemTextStyle}"
+                               Text="Opponent Dice Mods?"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Margin="15,0,5,5"
+                                   HorizontalAlignment="Left"
+                                   Style="{StaticResource ItemTextStyle}"
+                                   Text="Min:"/>
+                        <TextBox Margin="5,0,10,5"
+                                 Width="30"
+                                 HorizontalContentAlignment="Center"
+                                 Style="{StaticResource EnteredTextStyle}"
+                                 Text="{Binding OpponentDiceBonusMin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        <TextBlock Margin="0,0,5,5"
+                               MaxWidth="275"
+                               HorizontalAlignment="Left"
+                               Style="{StaticResource ItemTextStyle}"
+                               Text="Max:"/>
+                        <TextBox Margin="5,0,10,5"
+                                 Width="30"
+                                 HorizontalContentAlignment="Center"
+                                 Style="{StaticResource EnteredTextStyle}"
+                                 Text="{Binding OpponentDiceBonusMax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <Grid Grid.Row="1" Grid.Column="1"
+                      Grid.RowSpan="2">
+
+                    <TextBlock HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Style="{StaticResource SectionHeadingStyle}"
+                               FontSize="40"
+                               Text="{Binding SelectedOpponentSkillLevel}"
+                               Visibility="{Binding SelectedOpponentSkillIsKnown, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                    <oxy:Plot HorizontalContentAlignment="Center"
+                              VerticalContentAlignment="Center"
+                              Margin="5,10,10,0"
+                              Visibility="{Binding SelectedOpponentSkillIsUnknown, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <oxy:LineSeries ItemsSource="{Binding SelectedOpponentSkillDistribution, Mode=OneWay}" DataFieldX="X" DataFieldY="Y"/>
+                    </oxy:Plot>
+
+                </Grid>
+                
+                <Button Name="AddDataButton"
+                        Grid.Row="3" Grid.Column="1"
+                        Grid.RowSpan="3"
+                        Width="75" Height="75"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Command="{Binding AddRollResultCommand}">
+                    <Image Height="60" Width="60" Source="../Images/Dice.png"></Image>
+                </Button>
+                
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
