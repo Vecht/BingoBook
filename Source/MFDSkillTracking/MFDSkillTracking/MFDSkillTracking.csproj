@@ -71,6 +71,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Outcome.cs" />
     <Compile Include="Models\Skill.cs" />
     <Compile Include="ViewModels\VersusViewModel.cs" />
     <Compile Include="Views\BoolToVisibilityConverter.cs" />

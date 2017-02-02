@@ -66,21 +66,85 @@
         </Grid>
         
         <TextBlock Grid.Column="3"
-                   VerticalAlignment="Center"
+                   VerticalAlignment="Top"
                    HorizontalAlignment="Center"
-                   Margin="20"
+                   Margin="20,10,20,10"
                    FontSize="32"
                    FontFamily="Serif"
                    FontWeight="Bold"
                    Foreground="{Binding OutcomeProbability, Mode=OneWay, Converter={StaticResource DoubleToColorConverter}}"
-                   Text="{Binding OutcomeProbability, Mode=OneWay, StringFormat=' {0:N2}%'}">
+                   Text="{Binding OutcomeProbability, Mode=OneWay, StringFormat=' {0:N1}%'}">
             
         </TextBlock>
 
         <Grid Grid.Column="3"
-              VerticalAlignment="Bottom">
-            <StackPanel Margin="10">
-            </StackPanel>
+              VerticalAlignment="Bottom"
+              Margin="10,10,10,40">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0"
+                       Margin="5"
+                       Style="{StaticResource ItemTextStyle}"
+                       HorizontalAlignment="Left"
+                       Text="{Binding VictoryAPercent, StringFormat='A+: {0:N1}%'}"/>
+            <TextBlock Grid.Row="1" Grid.Column="0"
+                       Margin="5"
+                       Style="{StaticResource ItemTextStyle}"
+                       HorizontalAlignment="Left"
+                       Text="{Binding VictoryBPercent, StringFormat='B+: {0:N1}%'}"/>
+            <TextBlock Grid.Row="2" Grid.Column="0"
+                       Margin="5"
+                       Style="{StaticResource ItemTextStyle}"
+                       HorizontalAlignment="Left"
+                       Text="{Binding VictoryCPercent, StringFormat='C+: {0:N1}%'}"/>
+            <TextBlock Grid.Row="0" Grid.Column="1"
+                       Margin="5"
+                       Style="{StaticResource ItemTextStyle}"
+                       HorizontalAlignment="Left"
+                       Text="{Binding DefeatAPercent, StringFormat='A-: {0:N1}%'}"/>
+            <TextBlock Grid.Row="1" Grid.Column="1"
+                       Margin="5"
+                       Style="{StaticResource ItemTextStyle}"
+                       HorizontalAlignment="Left"
+                       Text="{Binding DefeatBPercent, StringFormat='B-: {0:N1}%'}"/>
+            <TextBlock Grid.Row="2" Grid.Column="1"
+                       Margin="5"
+                       Style="{StaticResource ItemTextStyle}"
+                       HorizontalAlignment="Left"
+                       Text="{Binding DefeatCPercent, StringFormat='C-: {0:N1}%'}"/>
+        </Grid>
+
+        <Button Grid.Column="3"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Bottom"
+                Margin="5"
+                Height="30" Width="30"
+                Command="{Binding ComputeCommand}">
+            <Image Source="../Images/kunai.png"/>
+        </Button>
+
+        <Grid Grid.Column="3"
+              Background="Black"
+              Opacity="0.75"
+              Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Image Width="75" Height="75"
+                   Margin="10,20,10,10"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Top"
+                   Source="../Images/hourglass.png"/>
+            <TextBlock Margin="10,10,10,20"
+                       VerticalAlignment="Bottom"
+                       HorizontalAlignment="Center"
+                       Style="{StaticResource ItemTextStyle}"
+                       Foreground="{Binding Progress, Converter={StaticResource DoubleToColorConverter}}"
+                       Text="{Binding Progress, Mode=OneWay, StringFormat=' {0:N2}%'}"/>
         </Grid>
 
         <Grid Grid.Column="5" VerticalAlignment="Top">
