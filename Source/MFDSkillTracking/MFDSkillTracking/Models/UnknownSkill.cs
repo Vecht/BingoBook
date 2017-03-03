@@ -174,31 +174,32 @@ namespace MFDSkillTracking.Models
             {
                 var likelihood = 0.0;
                 var diceHypothesis = index + 1 + roll.CharacterDiceBonus;
-                for (var diceModifier = roll.OpponentDiceBonusMin; diceModifier <= roll.OpponentDiceBonusMax; diceModifier++)
+                var opponentDiceBonusRange = roll.OpponentDiceBonusMax - roll.OpponentDiceBonusMin + 1.0;
+                for (var opponentDiceModifier = roll.OpponentDiceBonusMin; opponentDiceModifier <= roll.OpponentDiceBonusMax; opponentDiceModifier++)
                 {
-                    likelihood += Likelihood(diceHypothesis + diceModifier, roll.OpponentSkill, roll.Result);
+                    likelihood += Likelihood(diceHypothesis, roll.OpponentSkill, opponentDiceModifier, roll.Result);
+                    Progress += 1.0/opponentDiceBonusRange;
                 }
                 newDistribution[index] *= likelihood/(roll.OpponentDiceBonusMax - roll.OpponentDiceBonusMin + 1.0);
             }
         }
 
-        private double Likelihood(int diceHypothesis, object opponentSkill, double result)
+        private double Likelihood(int diceHypothesis, object opponentSkill, int opponentDiceModifier, double result)
         {
             var knownSkill = opponentSkill as KnownSkill;
-            if (knownSkill == null) return Likelihood(diceHypothesis, (UnknownSkill) opponentSkill, result);
+            if (knownSkill == null) return Likelihood(diceHypothesis, (UnknownSkill) opponentSkill, opponentDiceModifier, result);
 
-            Progress += 1;
-            return Likelihood(diceHypothesis, knownSkill.Level, result, Constants.ComputationAccuracy * 20);
+            return Likelihood(diceHypothesis, knownSkill.Level + opponentDiceModifier, result, Constants.ComputationAccuracy * 20);
         }
 
-        private double Likelihood(int diceHypothesis, UnknownSkill opponentSkill, double result)
+        private double Likelihood(int diceHypothesis, UnknownSkill opponentSkill, int opponentDiceModifier, double result)
         {
             var total = 0.0;
             var numIterations = opponentSkill.TopValues.Count;
             opponentSkill.TopValues.ForEach(skillValuePair =>
             {
                 Progress += 1.0/numIterations;
-                total += Likelihood(diceHypothesis, skillValuePair.Item1, result, Constants.ComputationAccuracy) * skillValuePair.Item2;
+                total += Likelihood(diceHypothesis, skillValuePair.Item1 + opponentDiceModifier, result, Constants.ComputationAccuracy) * skillValuePair.Item2;
             });
             return total;
         }
